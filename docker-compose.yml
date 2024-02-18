@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./frontend:/app
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      - DB=endgame
+      - DB_HOST=db
+      - DB_PASS=example
+      - DB_USER=john
+    ports:
+      - "5000:5000"
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_DB=endgame
+      - POSTGRES_USER=john
+      - POSTGRES_PASSWORD=example
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  db-replication-1:
+    image: postgres
+    environment:
+      - POSTGRES_DB=endgame
+      - POSTGRES_USER=john
+      - POSTGRES_PASSWORD=example
+    volumes:
+      - db-replication-1-data:/var/lib/postgresql/data
+
+  db-replication-2:
+    image: postgres
+    environment:
+      - POSTGRES_DB=endgame
+      - POSTGRES_USER=john
+      - POSTGRES_PASSWORD=example
+    volumes:
+      - db-replication-2-data:/var/lib/postgresql/data
+
+  redis:
+    image: redis
+
+volumes:
+  db-data:
+  db-replication-1-data:
+  db-replication-2-data:
+
